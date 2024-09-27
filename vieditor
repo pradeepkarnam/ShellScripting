@@ -1,0 +1,88 @@
+The vi editor (Visual Editor) is a text editor available on most Unix-like systems. It's one of the oldest and most commonly used text editors, especially on Linux, due to its simplicity, small footprint, and ubiquity.
+
+Modes in vi
+Vi operates primarily in three modes:
+
+Normal Mode (Command Mode):
+
+Default mode when you open a file in vi.
+You can move around the text and issue commands like deleting, copying, pasting, and saving, but not typing.
+Useful Commands:
+h, j, k, l: Move left, down, up, right respectively.
+x: Delete a character.
+dd: Delete the current line.
+yy: Copy the current line.
+p: Paste the copied content.
+u: Undo the last change.
+:: Enter command-line mode to save or quit.
+Insert Mode:
+
+Used for editing the text.
+To enter Insert Mode, you can use:
+i: Insert before the cursor.
+a: Insert after the cursor.
+o: Open a new line below the current one.
+To exit Insert Mode and return to Normal Mode, press Esc.
+Command-line Mode:
+
+Accessed by typing : in Normal Mode.
+Useful for file operations, such as saving or exiting.
+Useful Commands:
+:w: Save (write) the file.
+:q: Quit.
+:wq: Save and quit.
+:q!: Quit without saving.
+:x: Save and quit (same as :wq).
+Basic Workflow in vi Editor
+Opening a file:
+
+Copy code
+vi filename
+Insert text:
+
+Press i to enter Insert Mode and start typing.
+After editing, press Esc to switch back to Normal Mode.
+Saving the file:
+
+In Normal Mode, type :w and press Enter to save.
+Exiting vi:
+
+In Normal Mode, type :q and press Enter to quit.
+If you want to save and quit, type :wq.
+To quit without saving, use :q!.
+Key Shortcuts in vi
+Movement:
+
+w: Move to the next word.
+b: Move to the previous word.
+0: Move to the beginning of the line.
+$: Move to the end of the line.
+G: Move to the end of the file.
+gg: Move to the start of the file.
+Editing:
+
+cw: Change the current word (deletes and allows typing).
+dw: Delete the current word.
+r: Replace a single character.
+Search and Replace:
+
+/search_term: Search for a string (press n to go to the next occurrence).
+:s/old/new/g: Replace all occurrences of old with new in the current line.
+:%s/old/new/g: Replace all occurrences of old with new in the whole file.
+vi vs. vim
+vi is the original version, while vim (Vi IMproved) is a more advanced, feature-rich version of the vi editor. If you use vim, you get extra features like syntax highlighting, better undo functionality, and more.
+Summary of vi Commands
+Command	Description
+i	Insert before cursor
+a	Insert after cursor
+dd	Delete a line
+x	Delete a character
+p	Paste copied text
+u	Undo last change
+:w	Save (write) the file
+:q	Quit
+:wq	Save and quit
+/search_term	Search for a string
+:%s/old/new/g	Replace all occurrences of 'old' with 'new'
+
+Vi may feel challenging at first, but with practice, its powerful command structure allows for fast and efficient text manipulation.

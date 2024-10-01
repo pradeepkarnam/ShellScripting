@@ -1,0 +1,181 @@
+Linux file permissions are a crucial aspect of the security model in Linux, controlling access to files and directories. Each file and directory in a Linux system has associated access rights that define which users and groups can read, write, or execute the file.
+
+### **1. Understanding File Permissions**
+
+Every file or directory has three sets of permissions:
+1. **User (Owner)** – The person who owns the file.
+2. **Group** – The group associated with the file. Multiple users can belong to a group.
+3. **Others (World)** – Everyone else who has access to the system.
+
+Each of these categories can have three types of permissions:
+- **Read (r)**: Permission to read the contents of the file (or list the contents of a directory).
+- **Write (w)**: Permission to modify the contents of the file (or create, delete, and rename files in a directory).
+- **Execute (x)**: Permission to run the file as a program (or traverse the directory to access its contents).
+
+### **2. Permission Representation**
+
+File permissions are typically represented in two ways:
+1. **Symbolic Representation** (using `r`, `w`, and `x`).
+2. **Numeric (Octal) Representation** (using digits 0-7).
+
+#### **Symbolic Representation**
+File permissions are shown using `ls -l` like this:
+
+```bash
+-rwxr-xr--
+```
+
+The format can be broken down as:
+
+| Character(s) | Meaning |
+|--------------|---------|
+| `-`          | File type (`-` for a file, `d` for directory, `l` for link) |
+| `rwx`        | User (owner) permissions: read (`r`), write (`w`), execute (`x`) |
+| `r-x`        | Group permissions: read (`r`), no write (`-`), execute (`x`) |
+| `r--`        | Others permissions: read (`r`), no write (`-`), no execute (`-`) |
+
+**Example Breakdown**:
+```bash
+-rwxr-xr--
+```
+- `-`: Indicates this is a regular file (not a directory).
+- `rwx`: Owner can read, write, and execute the file.
+- `r-x`: Group members can read and execute, but not write to the file.
+- `r--`: Others can only read the file, no write or execute permissions.
+
+#### **Numeric (Octal) Representation**
+Each permission can also be represented using a number:
+- `r` = 4 (read)
+- `w` = 2 (write)
+- `x` = 1 (execute)
+- `-` = 0 (no permission)
+
+By adding the values of read, write, and execute permissions for each category, you can represent them numerically.
+
+**Example Breakdown**:
+```bash
+-rwxr-xr--   # This would be represented as 754
+```
+- Owner: `rwx` = 4 (read) + 2 (write) + 1 (execute) = 7
+- Group: `r-x` = 4 (read) + 0 (no write) + 1 (execute) = 5
+- Others: `r--` = 4 (read) + 0 (no write) + 0 (no execute) = 4
+
+So, the numeric representation is `754`.
+
+### **3. Changing Permissions**
+
+You can change file permissions using the `chmod` command, either symbolically or numerically.
+
+#### **Using Symbolic Representation**
+
+```bash
+chmod u+x file.txt
+```
+- `u`: Refers to the user (owner).
+- `+x`: Adds execute permission.
+
+```bash
+chmod g-w file.txt
+```
+- `g`: Refers to the group.
+- `-w`: Removes write permission.
+
+```bash
+chmod o+r file.txt
+```
+- `o`: Refers to others (world).
+- `+r`: Adds read permission.
+
+#### **Using Numeric Representation**
+
+```bash
+chmod 755 file.txt
+```
+- This sets the permissions to `rwxr-xr-x`.
+  - Owner: `7` (read, write, execute)
+  - Group: `5` (read, execute)
+  - Others: `5` (read, execute)
+
+### **4. Ownership of Files and Directories**
+
+Every file and directory has an associated owner and group. You can change these using the `chown` command.
+
+- **Changing the Owner**:
+    ```bash
+    chown user_name file.txt
+    ```
+
+- **Changing the Group**:
+    ```bash
+    chown :group_name file.txt
+    ```
+
+- **Changing Owner and Group at the Same Time**:
+    ```bash
+    chown user_name:group_name file.txt
+    ```
+
+### **5. Default File Permissions: `umask`**
+
+When a file or directory is created, the system automatically assigns default permissions using the `umask`. The `umask` is a value that "masks" or restricts the default permissions.
+
+- For files, the base permission is `666` (read and write for everyone).
+- For directories, the base permission is `777` (read, write, execute for everyone).
+
+The `umask` value subtracts from these default permissions.
+
+**Example**:
+If `umask` is `022`, the permissions are:
+- Files: `666 - 022 = 644` (owner can read/write, group and others can read).
+- Directories: `777 - 022 = 755` (owner can read/write/execute, group and others can read/execute).
+
+To view the current `umask` value:
+```bash
+umask
+```
+
+To set a new `umask` value:
+```bash
+umask 027
+```
+
+### **6. Special Permissions**
+
+Linux provides three special permission bits that offer additional control for files and directories:
+1. **Setuid (Set User ID)** – Allows a file to be executed with the permissions of the file owner, rather than the user who is running the file.
+    - Symbol: `s` in the owner's execute position.
+    - Numeric: `4000`.
+
+2. **Setgid (Set Group ID)** – For files, it ensures the file executes with the group permissions of the file owner. For directories, it ensures all files created within inherit the group of the directory.
+    - Symbol: `s` in the group’s execute position.
+    - Numeric: `2000`.
+
+3. **Sticky Bit** – Applied to directories. It ensures that only the file owner can delete or rename files within the directory, even if others have write permissions.
+    - Symbol: `t` in the others' execute position.
+    - Numeric: `1000`.
+
+#### **Example of Setting Special Permissions**:
+- **Setuid**: 
+    ```bash
+    chmod u+s file.txt   # or chmod 4755 file.txt
+    ```
+- **Setgid**:
+    ```bash
+    chmod g+s directory/   # or chmod 2755 directory/
+    ```
+- **Sticky Bit**:
+    ```bash
+    chmod +t directory/   # or chmod 1755 directory/
+    ```
+
+### **7. Practical Use Cases for File Permissions**
+
+- **Securing Sensitive Files**: For example, setting sensitive configuration files (like `/etc/shadow` which stores password hashes) to `600` ensures only the owner (root) can read/write it.
+  
+- **Shared Directories**: Using `setgid` on a directory ensures that all files created within that directory inherit the directory's group, which is useful in collaborative projects.
+
+- **Public Directories**: A sticky bit on a public directory (like `/tmp`) ensures that users can only delete their own files, not those of other users, even if the directory is world-writable.
+
+---
+
+Understanding and properly managing file permissions in Linux is crucial for maintaining system security and ensuring appropriate access control for users, groups, and processes.
